@@ -1,16 +1,7 @@
 package me.gruzdeva.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.NoArgsConstructor;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.HttpException;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
-
-import java.io.IOException;
 import java.util.Random;
 
 @NoArgsConstructor
@@ -55,5 +46,5 @@ public class WeatherService implements ApiClient {
             .append("?access_key=").append(API_KEY)
             .append("&query=").append(query);
         return ApiClient.callApi(url.toString());
-    };
+    }
 }

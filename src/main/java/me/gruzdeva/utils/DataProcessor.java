@@ -10,7 +10,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.time.LocalDateTime;
 import java.util.Set;
 import java.io.IOException;
 
@@ -65,9 +64,7 @@ public class DataProcessor {
             switch (format) {
                 case FORMAT_JSON -> writeJson(serviceName, data);
                 case FORMAT_CSV -> writeCsv(serviceName, data);
-                default -> {
-                    logger.warn("Unsupported format: {}", format);
-                }
+                default -> logger.warn("Unsupported format: {}", format);
             }
         } catch (Exception e) {
             logger.error("Error processing data for service {}: {}", serviceName, e.getMessage());
@@ -109,13 +106,13 @@ public class DataProcessor {
             if (rootNode.has("results") && rootNode.get("results").isArray()) {
                 JsonNode resultsArray = rootNode.get("results");
 
-                if (resultsArray.size() > 0) {
+                if (!resultsArray.isEmpty()) {
                     // Get fields from first article for headers
                     JsonNode firstArticle = resultsArray.get(0);
                     StringBuilder headers = new StringBuilder();
 
                     firstArticle.fieldNames().forEachRemaining(field -> {
-                        if (headers.length() > 0) {
+                        if (!headers.isEmpty()) {
                             headers.append(",");
                         }
                         headers.append(escapeField(field));
@@ -128,7 +125,7 @@ public class DataProcessor {
                         StringBuilder row = new StringBuilder();
 
                         firstArticle.fieldNames().forEachRemaining(field -> {
-                            if (row.length() > 0) {
+                            if (!row.isEmpty()) {
                                 row.append(",");
                             }
                             JsonNode value = article.get(field);
@@ -181,12 +178,12 @@ public class DataProcessor {
             } else if (rootNode.isArray()) {
                 // Process normal array (not NYTimes-specific)
                 // [existing array processing code]
-                if (rootNode.size() > 0) {
+                if (!rootNode.isEmpty()) {
                     JsonNode firstItem = rootNode.get(0);
                     StringBuilder headers = new StringBuilder();
 
                     firstItem.fieldNames().forEachRemaining(field -> {
-                        if (headers.length() > 0) {
+                        if (!headers.isEmpty()) {
                             headers.append(",");
                         }
                         headers.append(escapeField(field));
@@ -199,7 +196,7 @@ public class DataProcessor {
                         StringBuilder row = new StringBuilder();
 
                         firstItem.fieldNames().forEachRemaining(field -> {
-                            if (row.length() > 0) {
+                            if (!row.isEmpty()) {
                                 row.append(",");
                             }
                             JsonNode value = item.get(field);

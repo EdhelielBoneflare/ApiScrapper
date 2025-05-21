@@ -20,12 +20,13 @@ public class ApiTaskPooler {
     public ApiTaskPooler(int maxThreads) {
         this.maxThreads = maxThreads;
         this.executor = Executors.newFixedThreadPool(maxThreads);
-        this.taskQueue = new LinkedBlockingQueue<>();ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
+        this.taskQueue = new LinkedBlockingQueue<>();
         isRunning.set(true);
     }
 
     public void shutdown() {
         logger.info("Shutting down API task pooler");
+        isRunning.set(false);
         if (executor != null) {
             executor.shutdown();
             try {
