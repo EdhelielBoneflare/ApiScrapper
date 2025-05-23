@@ -1,12 +1,12 @@
 package me.gruzdeva.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,18 +41,28 @@ public interface ApiClient {
         return apiClient;
     }
 
+    static CloseableHttpClient getHttpClient() {
+        return HttpClients.createDefault();
+    }
+
+    static String serializeToJson(JsonNode node) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(node);
+    }
+
     static JsonNode callApi(String url) throws Exception {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+        try (CloseableHttpClient httpClient = getHttpClient()) {
             HttpGet request = new HttpGet(url);
             try (CloseableHttpResponse response = httpClient.execute(request)) {
                 if (response.getCode() != 200) {
                     throw new Exception(url + " Failed to fetch data : " + response.getReasonPhrase());
                 }
-                String json = EntityUtils.toString(response.getEntity());
-                return objectMapper.readTree(json);
-            } catch (Exception e) {
-                logger.error("{} - ErrApiClient001 - Received status code is not 200: {}", url, e.getMessage());
-                throw new Exception("ErrApiClient001", e);
+                try {
+                    String json = EntityUtils.toString(response.getEntity());
+                    return objectMapper.readTree(json);
+                } catch (Exception e) {
+                    logger.error("{} - ErrApiClient001 - Received status code is not 200: {}", url, e.getMessage());
+                    throw new Exception("ErrApiClient001", e);
+                }
             }
         } catch (IOException e) {
             logger.error("{} ErrApiClient002. Error connecting to API: {}", url, e.getMessage());

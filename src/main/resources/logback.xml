@@ -12,10 +12,13 @@
         </encoder>
     </appender>
 
+    <appender name="NULL" class="ch.qos.logback.core.helpers.NOPAppender" />
+
     <root level="WARN">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
+        <appender-ref ref="NULL" />
     </root>
 
-    <logger name="me.gruzdeva" level="WARN" />
+    <logger name="me.gruzdeva" level="OFF"/>
 </configuration>

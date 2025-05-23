@@ -15,20 +15,20 @@ class Main {
     private final static Logger logger = LoggerFactory.getLogger(Main.class);
     private static int N; // Number of cycles to run the application
 
-    private final static String INVALID_MAX_THREADS = "Invalid maximum number of threads. Please provide a valid integer.";
-    private final static String NEGATIVE_MAX_THREADS = "Invalid maximum number of threads. Please provide a positive integer.";
-    private final static String INVALID_NUMBER_OF_ARGS = """
+    public final static String INVALID_MAX_THREADS = "Invalid maximum number of threads. Please provide a valid integer.";
+    public final static String NEGATIVE_MAX_THREADS = "Invalid maximum number of threads. Please provide a positive integer.";
+    public final static String INVALID_NUMBER_OF_ARGS = """
             Please provide correct arguments: \
             maxThreads, timeout, services (comma-separated), and output format (json/csv).
             Usage: <threads> <timeout> <services> <format>
             Example: 5 10 NYTimes,CatFacts json""";
 
-    private final static String INVALID_TIMEOUT = "Invalid number format for timeout. Please provide a valid integer.";
-    private final static String NEGATIVE_TIMEOUT = "Invalid timeout. Please provide a positive integer.";
-    private final static String INVALID_SERVICES = "Invalid services provided.\nPlease provide a valid list of services: " + ApiClient.SERVICES +
+    public final static String INVALID_TIMEOUT = "Invalid number format for timeout. Please provide a valid integer.";
+    public final static String NEGATIVE_TIMEOUT = "Invalid timeout. Please provide a positive integer.";
+    public final static String INVALID_SERVICES = "Invalid services provided.\nPlease provide a valid list of services: " + ApiClient.SERVICES +
             ".\n Example: 'service1,service2'";
-    private final static String NO_SERVICES = "No services provided. Please provide a comma-separated list of services. Example: 'service1,service2'";
-    private final static String INVALID_OUT_FORM = "Invalid output format. Valid formats: " + DataProcessor.FORMATS;
+    public final static String NO_SERVICES = "No services provided. Please provide a comma-separated list of services. Example: 'service1,service2'";
+    public final static String INVALID_OUT_FORM = "Invalid output format. Valid formats: " + DataProcessor.FORMATS;
 
 
     /**
@@ -136,9 +136,6 @@ class Main {
         }
 
         services = args[2].trim().split(",");
-        if (services.length == 0) {
-            throw new IllegalArgumentException(NO_SERVICES);
-        }
         if (!ApiClient.SERVICES.containsAll(Set.of(services))) {
             throw new IllegalArgumentException(INVALID_SERVICES);
         }

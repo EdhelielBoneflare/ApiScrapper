@@ -16,19 +16,27 @@ import java.io.IOException;
 public class DataProcessor {
     private final static Logger logger = LoggerFactory.getLogger(DataProcessor.class);
 
-    private final static String OUT_DIR = "./result";
+    private final static String DEFAULT_OUT_DIR = "./result";
     private final static String OUT_FILE = "output";
-    private final static String OUT_FILE_NAME = OUT_DIR + File.separator + OUT_FILE;
+    private final static String OUT_FILE_NAME = DEFAULT_OUT_DIR + File.separator + OUT_FILE;
     private final static String FORMAT_JSON = "json";
     private final static String FORMAT_CSV = "csv";
     public final static Set<String> FORMATS = Set.of(FORMAT_JSON, FORMAT_CSV);
 
+    private final String outDir;
+    private final String outFileName;
     private final String format;
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public DataProcessor(String format) {
+        this(format, DEFAULT_OUT_DIR);
+    }
+
+    public DataProcessor(String format, String outDir) {
         this.format = format;
-        deleteFileIfExists(Path.of(OUT_FILE_NAME + "." + format));
+        this.outDir = outDir;
+        this.outFileName = outDir + File.separator + OUT_FILE;
+        deleteFileIfExists(Path.of(outFileName + "." + format));
         createOutputDirectory();
     }
 
@@ -45,11 +53,11 @@ public class DataProcessor {
     }
 
     private void createOutputDirectory() {
-        File dir = new File(OUT_DIR);
+        File dir = new File(outDir);
         if (!dir.exists()) {
             boolean created = dir.mkdirs();
             if (created) {
-                logger.info("Created output directory: {}", OUT_DIR);
+                logger.info("Created output directory: {}", outDir);
             }
         }
     }
@@ -75,7 +83,7 @@ public class DataProcessor {
     private void writeIntoFile(String data) throws IOException {
         try {
             Files.writeString(
-                    Path.of(OUT_FILE_NAME + "." + format),
+                    Path.of(outDir + File.separator + OUT_FILE + "." + format),
                     data,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.APPEND);

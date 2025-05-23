@@ -30,7 +30,7 @@ public class NYTimesService implements ApiClient {
 
         JsonNode resultNode = fetchMostViewedArticles(timePeriod);
         try {
-            result = objectMapper.writeValueAsString(resultNode);
+            result = ApiClient.serializeToJson(resultNode);
         } catch (JsonProcessingException e) {
             logger.error("ErrNYT001. Error parsing data from {}: {}", getServiceName(), e.getMessage());
             throw new IllegalArgumentException("ErrNYT001.", e);
@@ -41,6 +41,6 @@ public class NYTimesService implements ApiClient {
     public static JsonNode fetchMostViewedArticles(int timePeriod) throws Exception{
         String url = URL_BASE + URL_MOST_POPULAR + "/viewed/" + timePeriod + ".json?api-key=" + API_KEY;
         return ApiClient.callApi(url);
-    };
+    }
 
 }

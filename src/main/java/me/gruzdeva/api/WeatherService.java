@@ -34,7 +34,7 @@ public class WeatherService implements ApiClient {
 
         JsonNode resultNode = fetchCurrentWeather(query);
         try {
-            result = objectMapper.writeValueAsString(resultNode);
+            result = ApiClient.serializeToJson(resultNode);
         } catch (Exception e) {
             logger.error("ErrWeather001. Error parsing data from WeatherStack: {}", e.getMessage());
             throw new IllegalArgumentException("ErrWeather001.", e);

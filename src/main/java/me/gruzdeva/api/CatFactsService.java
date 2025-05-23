@@ -3,11 +3,6 @@ package me.gruzdeva.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.NoArgsConstructor;
 import me.gruzdeva.config.ConfigManager;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 @NoArgsConstructor
 public class CatFactsService implements ApiClient {
@@ -25,7 +20,7 @@ public class CatFactsService implements ApiClient {
 
         JsonNode resultNode = fetchCatFact();
         try {
-            result = objectMapper.writeValueAsString(resultNode);
+            result = ApiClient.serializeToJson(resultNode);
         } catch (Exception e) {
             logger.error("ErrCatFact001. Error processing data from WeatherStack: {}", e.getMessage());
             throw new IllegalArgumentException("ErrCatFact001.", e);
