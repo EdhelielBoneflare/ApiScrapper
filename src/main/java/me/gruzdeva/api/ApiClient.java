@@ -23,7 +23,7 @@ public interface ApiClient {
     String SERVICE_WEATHER = "Weather";
     Set<String> SERVICES = Set.of(SERVICE_NYTIMES, SERVICE_CAT_FACTS, SERVICE_WEATHER);
 
-    String fetchData() throws IOException;
+    String fetchData() throws Exception;
     String getServiceName();
 
     static ApiClient getApiClient(String serviceName) {
@@ -32,26 +32,31 @@ public interface ApiClient {
             case SERVICE_NYTIMES -> apiClient = new NYTimesService();
             case SERVICE_CAT_FACTS -> apiClient = new CatFactsService();
             case SERVICE_WEATHER -> apiClient = new WeatherService();
-            // default case is covered by the args check
+            // main is frontend. We do not trust frontend, so we check again
+            default -> {
+                logger.error("Unknown service name: {}", serviceName);
+                throw new IllegalArgumentException("Unknown service name: " + serviceName);
+            }
         }
         return apiClient;
     }
 
-    static JsonNode callApi(String url) {
+    static JsonNode callApi(String url) throws Exception {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet request = new HttpGet(url);
             try (CloseableHttpResponse response = httpClient.execute(request)) {
                 if (response.getCode() != 200) {
-                    throw new HttpException(url + " Failed to fetch data : " + response.getReasonPhrase());
+                    throw new Exception(url + " Failed to fetch data : " + response.getReasonPhrase());
                 }
                 String json = EntityUtils.toString(response.getEntity());
                 return objectMapper.readTree(json);
-            } catch (HttpException e) {
-                logger.error("{} Received status code is not 200: {}", url, e.getMessage());
+            } catch (Exception e) {
+                logger.error("{} - ErrApiClient001 - Received status code is not 200: {}", url, e.getMessage());
+                throw new Exception("ErrApiClient001", e);
             }
         } catch (IOException e) {
-            logger.error("{} Error connecting to  API: {}", url, e.getMessage());
+            logger.error("{} ErrApiClient002. Error connecting to API: {}", url, e.getMessage());
+            throw new IOException("ErrApiClient002", e);
         }
-        return null;
     }
 }

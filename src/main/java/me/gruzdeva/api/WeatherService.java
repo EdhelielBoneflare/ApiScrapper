@@ -2,13 +2,15 @@ package me.gruzdeva.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.NoArgsConstructor;
+import me.gruzdeva.config.ConfigManager;
+
 import java.util.Random;
 
 @NoArgsConstructor
 public class WeatherService implements ApiClient {
-    private static final String API_KEY = "30753fa30d8bc2809d036b86e7651751";
-    private static final String URL_BASE = "http://api.weatherstack.com";
-    private static final String URL_CURRENT = "/current";
+    private static final String API_KEY = ConfigManager.getProperty("weather.api.key");
+    private static final String URL_BASE = ConfigManager.getProperty("weather.url.base");
+    private static final String URL_CURRENT = ConfigManager.getProperty("weather.url.current");
 
     private static final String[] POSSIBLE_CITIES = {
             "Tokyo",
@@ -25,20 +27,22 @@ public class WeatherService implements ApiClient {
     }
 
     @Override
-    public String fetchData() {
+    public String fetchData() throws Exception {
         logger.info("Fetching data from WeatherStack service");
         String query = POSSIBLE_CITIES[random.nextInt(POSSIBLE_CITIES.length)];
         String result = null;
+
+        JsonNode resultNode = fetchCurrentWeather(query);
         try {
-            JsonNode resultNode = fetchCurrentWeather(query);
             result = objectMapper.writeValueAsString(resultNode);
         } catch (Exception e) {
-            logger.error("Error fetching data from WeatherStack: {}", e.getMessage());
+            logger.error("ErrWeather001. Error parsing data from WeatherStack: {}", e.getMessage());
+            throw new IllegalArgumentException("ErrWeather001.", e);
         }
         return result;
     }
 
-    public static JsonNode fetchCurrentWeather(String query) {
+    public static JsonNode fetchCurrentWeather(String query) throws Exception {
         // StringBuilder instead of string concatenation for performance (because of multiple appends)
         StringBuilder url = new StringBuilder();
         url.append(URL_BASE)

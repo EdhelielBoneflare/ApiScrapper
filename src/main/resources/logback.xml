@@ -12,10 +12,10 @@
         </encoder>
     </appender>
 
-    <root level="INFO">
+    <root level="WARN">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
 
-    <logger name="me.gruzdeva" level="DEBUG" />
+    <logger name="me.gruzdeva" level="WARN" />
 </configuration>

@@ -31,6 +31,7 @@ public class ApiTaskPooler {
             executor.shutdown();
             try {
                 if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                    logger.warn("Executor did not terminate in time, forcing shutdown");
                     executor.shutdownNow();
                 }
             } catch (InterruptedException e) {
@@ -61,7 +62,6 @@ public class ApiTaskPooler {
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                logger.warn("Interrupted while waiting for task to finish");
                 break;
             } catch (Exception e) {
                 logger.error("Error processing task: {}", e.getMessage());
@@ -70,25 +70,29 @@ public class ApiTaskPooler {
     }
 
     private void executeTask(ServiceTask task) {
-        ApiClient apiClient = task.getApiClient();
-
         try {
-            String data = apiClient.fetchData();
-            if (data != null) {
-                task.getDataProcessor().process(apiClient.getServiceName(), data);
-            } else {
-                logger.warn("No data received from {}", apiClient.getServiceName());
+            ApiClient apiClient = task.getApiClient();
+
+            try {
+                String data = apiClient.fetchData();
+                if (data != null) {
+                    task.getDataProcessor().process(apiClient.getServiceName(), data);
+                } else {
+                    logger.warn("ErrPooler001. No data received from {}", apiClient.getServiceName());
+                }
+            } catch (Exception e) {
+                logger.error("ErrPooler002. Error fetching data from {}: {}", apiClient.getServiceName(), e.getMessage());
+                return;
+            }
+
+            try {
+                Thread.sleep(task.getTimeout());
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.warn("Task interrupted: {}", e.getMessage());
             }
         } catch (Exception e) {
-            logger.error("Error fetching data from {}: {}", apiClient.getServiceName(), e.getMessage());
-            return;
-        }
-
-        try {
-            Thread.sleep(task.getTimeout());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            logger.warn("Task interrupted: {}", e.getMessage());
+            System.err.println("If you see error code, please contact support (check logs). " + e.getMessage());
         }
     }
 
