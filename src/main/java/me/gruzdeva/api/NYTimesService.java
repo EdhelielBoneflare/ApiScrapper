@@ -35,7 +35,7 @@ public class NYTimesService implements ApiClient {
             logger.error("ErrNYT001. Error parsing data from {}: {}", getServiceName(), e.getMessage());
             throw new IllegalArgumentException("ErrNYT001.", e);
         }
-        return result;
+        return result + "\n";
     }
 
     public static JsonNode fetchMostViewedArticles(int timePeriod) throws Exception{

@@ -25,7 +25,7 @@ public class CatFactsService implements ApiClient {
             logger.error("ErrCatFact001. Error processing data from WeatherStack: {}", e.getMessage());
             throw new IllegalArgumentException("ErrCatFact001.", e);
         }
-        return result;
+        return result  + "\n";
     }
 
     private JsonNode fetchCatFact() throws Exception {

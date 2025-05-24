@@ -39,7 +39,7 @@ public class WeatherService implements ApiClient {
             logger.error("ErrWeather001. Error parsing data from WeatherStack: {}", e.getMessage());
             throw new IllegalArgumentException("ErrWeather001.", e);
         }
-        return result;
+        return result + "\n";
     }
 
     public static JsonNode fetchCurrentWeather(String query) throws Exception {

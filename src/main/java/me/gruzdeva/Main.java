@@ -47,16 +47,12 @@ class Main {
             int timeout;
             String[] services;
             String outFormat;
-            try {
-                List<Object> arguments = getArguments(args);
-                maxThreads = (int) arguments.get(0);
-                timeout = (int) arguments.get(1) * 1000; // convert seconds to milliseconds
-                services = (String[]) arguments.get(2);
-                outFormat = (String) arguments.get(3);
-            } catch (IllegalArgumentException e) {
-                System.err.println(e.getMessage());
-                return;
-            }
+
+            List<Object> arguments = getArguments(args);
+            maxThreads = (int) arguments.get(0);
+            timeout = (int) arguments.get(1) * 1000; // convert seconds to milliseconds
+            services = (String[]) arguments.get(2);
+            outFormat = (String) arguments.get(3);
 
             DataProcessor dataProcessor = new DataProcessor(outFormat);
             ApiTaskPooler apiTaskPooler = new ApiTaskPooler(maxThreads);

@@ -6,7 +6,6 @@ This is a university project, so some code may not be seen as best practice due 
 Some of the improvements that could be made are:
 1. Services can be written in separate files, to allow creating a valid output file that can be easily fetched.
 It is not done, as the task required to create a single file with all the data.
-2. Some of the data is hardcoded, instead of being fetched from .env files.
 
 ## Features
 

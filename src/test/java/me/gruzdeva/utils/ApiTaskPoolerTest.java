@@ -96,7 +96,6 @@ class ApiTaskPoolerTest {
         // Wait for first execution
         assertTrue(latch.await(1, TimeUnit.SECONDS));
 
-        // Shutdown pooler
         taskPooler.shutdown();
 
         // Reset the mocks to track calls after shutdown
